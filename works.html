@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>制作｜あいろ</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: linear-gradient(180deg, #5f6064 0%, #3f4044 100%);
+  background-attachment: fixed;
+  color: #f8f8f8;
+  padding: 0;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(10px);
+  padding: 20px;
+}
+
+.container.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.logo-wrap {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.logo-img {
+  width: 220px;
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter:
+    drop-shadow(0 2px 6px rgba(0,0,0,0.28))
+    drop-shadow(0 0 8px rgba(255,245,200,0.12));
+}
+
+.works-catch-copy {
+  display: block;
+  width: 90px;
+  max-width: 60%;
+  margin: 24px auto 12px;
+  opacity: 0.55;
+  filter:
+    drop-shadow(0 0 3px rgba(0,0,0,0.25))
+    drop-shadow(0 0 6px rgba(255,220,120,0.08));
+}
+
+.card {
+  background: rgba(28, 28, 31, 0.58);
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.16),
+    0 2px 8px rgba(255, 255, 255, 0.03) inset;
+  backdrop-filter: blur(4px);
+  margin-top: 8px;
+}
+
+.form-card {
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.form-section {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 28px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.label-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  color: #fff7fa;
+}
+
+input, textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: none;
+  font-size: 13px;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.08);
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+textarea {
+  min-height: 110px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  resize: vertical;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  opacity: 0.5;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-btn {
+  display: inline-block;
+  width: auto;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: rgba(219, 192, 106, 0.5);
+  color: #ffffff;
+  font-weight: 400;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.file-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+.file-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.file-btn input {
+  display: none;
+}
+
+#file-name {
+  margin-left: 4px;
+  opacity: 0.7;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.photo-preview {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  border-radius: 16px;
+  margin-top: 14px;
+  margin-bottom: 0;
+  display: block;
+  background: rgba(255,255,255,0.03);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.flow-arrow {
+  text-align: center;
+  margin: 8px 0 12px;
+  font-size: 16px;
+  letter-spacing: -2px;
+  animation: floatArrow 2.5s ease-in-out infinite;
+}
+
+@keyframes floatArrow {
+  0% { transform: translateY(0px); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+  100% { transform: translateY(0px); opacity: 0.6; }
+}
+
+.save-wrap {
+  padding-top: 20px;
+  padding-bottom: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.save-btn {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  width: 100%;
+  display: block;
+  margin-top: 0px;
+  margin-bottom: 0;
+  padding: 16px 20px;
+  border-radius: 24px;
+  border: none;
+  outline: none;
+  background: #dbc06a;
+  color: #1b1b1d;
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.save-btn:active {
+  transform: scale(0.98);
+}
+
+.log-list-card {
+  margin-top: 24px;
+  margin-bottom: 26px;
+  padding: 16px;
+}
+
+.section-title {
+  margin-top: 4px;
+  margin-bottom: 10px;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fffafc;
+}
+
+.top-tools {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.top-tools select {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 12px 14px;
+  font-size: 12px;
+  backdrop-filter: blur(6px);
+  letter-spacing: 0.05em;
+  font-family: 'Zen Maru Gothic', sans-serif;
+}
+
+.work-item {
+  background: rgba(255,255,255,0.06);
+  border-radius: 24px; /* ← cardと揃える */
+  padding: 16px;       /* ← cardより少しだけ軽く */
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.work-item:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.work-title-main {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fffafc;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.work-title-main.empty {
+  color: rgba(255,255,255,0.35);
+  opacity: 0.55;
+  filter: blur(0.4px);
+}
+
+.work-subtitle {
+  font-size: 14px;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.6;
+}
+
+.detail {
+  white-space: pre-wrap;
+  line-height: 1.85;
+  font-size: 15px;
+}
+
+.detail-block {
+  background: rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: #dbc06a;
+  margin-bottom: 6px;
+  letter-spacing: 0.08em;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.button-row button,
+.detail-close {
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-weight: 700;
+  border-radius: 999px;
+  border: none;
+  box-shadow: none;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  cursor: pointer;
+}
+
+.detail-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.detail-actions button:first-child {
+  background: #d4b45f;
+  color: black;
+}
+
+.detail-close {
+  display: block;
+  margin: 16px auto 0;
+}
+
+.subnav-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.subnav-link {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.72);
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.subnav-link:active {
+  transform: none;
+  opacity: 0.7;
+}
+
+.side-nav {
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.side-nav a {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  padding: 6px 4px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+}
+
+.side-nav a:active {
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+
+.side-nav a.active {
+  color: #dbc06a;
+  opacity: 1;
+}
+
+.page-fade {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,20,22,0.4);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.4s ease;
+}
+
+.page-fade.show {
+  opacity: 1;
+}
+
+.fade-out {
+  opacity: 0;
+  filter: blur(4px);
+  transition: 0.8s ease;
+}
+
+.backup-card {
+  margin: 18px 0 28px;
+  padding: 16px;
+  width: 90%;
+  border-radius: 22px;
+  background: rgba(28, 28, 31, 0.48);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  backdrop-filter: blur(6px);
+  text-align: center;
+}
+
+.backup-title {
+  color: #fff6cc;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.backup-sub {
+  color: rgba(255,255,255,0.62);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.backup-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.backup-buttons button {
+  width: auto;
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(219,192,106,0.55);
+  background: rgba(219,192,106,0.18);
+  color: #fff6cc;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.backup-import {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.78);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.backup-import input {
+  display: none;
+}
+
+.backup-card {
+  margin: 18px 0 28px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(28, 28, 31, 0.48);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+  backdrop-filter: blur(6px);
+  text-align: center;
+}
+
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(28, 28, 31, 0.85);
+  color: #fff6cc;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s ease;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.works-mark-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.works-mark {
+  width: 88px;
+  height: auto;
+  opacity: 0.92;
+  filter:
+    drop-shadow(0 2px 6px rgba(0,0,0,0.25))
+    drop-shadow(0 0 6px rgba(255,245,200,0.10));
+}
+
+</style>
+</head>
+
+<body>
+<div id="pageFade" class="page-fade"></div>
+
+<div class="container">
+  <div class="logo-wrap">
+    <img src="images/works-logo.png" class="logo-img" alt="制作">
+  </div>
+
+  <img src="images/works-catch-copy.png" class="works-catch-copy" alt="芯の往復">
+
+  <div class="card form-card">
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-date.png" class="label-icon" alt="">
+        <label>いつ？</label>
+      </div>
+      <input type="date" id="date">
+    </div>
+
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-title.png" class="label-icon" alt="">
+        <label>作品名</label>
+      </div>
+      <input type="text" id="title" placeholder="作品名（仮でもOK）">
+    </div>
+
+    <div class="form-section image-section">
+      <div class="label-row">
+        <img src="icons/mark-image.png" class="label-icon" alt="">
+        <label>画像</label>
+      </div>
+
+      <div class="file-row">
+        <label class="file-btn">
+          ファイルを選択
+          <input type="file" id="photo" accept="image/*">
+        </label>
+        <span id="file-name">画像えらんでね</span>
+      </div>
+
+      <img id="photoPreview" class="photo-preview hidden" alt="作品画像プレビュー">
+    </div>
+
+    <div class="flow-arrow">︾</div>
+
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-theme.png" class="label-icon" alt="">
+        <label>テーマ</label>
+      </div>
+      <textarea id="theme" placeholder="どんなテーマで作ろうと思った？"></textarea>
+    </div>
+
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-point.png" class="label-icon" alt="">
+        <label>きっかけ</label>
+      </div>
+      <textarea id="trigger" placeholder="どこから立ち上がった？"></textarea>
+    </div>
+
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-challenge.png" class="label-icon" alt="">
+        <label>挑戦</label>
+      </div>
+      <textarea id="challenge" placeholder="何を試したかった？"></textarea>
+    </div>
+
+    <div class="form-section">
+      <div class="label-row">
+        <img src="icons/mark-atmosphere.png" class="label-icon" alt="">
+        <label>届けたい感じ</label>
+      </div>
+      <textarea id="feeling" placeholder="どう残ってほしい？"></textarea>
+    </div>
+
+    <div class="form-section save-section">
+      <div class="save-wrap">
+        <button id="saveButton" class="save-btn" onclick="saveWork()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card log-list-card">
+    <div class="works-mark-row">
+  <img src="images/works-mark.png" class="works-mark" alt="制作">
+</div>
+
+    <div class="top-tools">
+      <select id="sortOrder" onchange="renderWorks()">
+        <option value="new">新しい順</option>
+        <option value="old">古い順</option>
+      </select>
+    </div>
+
+    <div id="workList"></div>
+
+    <div class="subnav-row">
+      <button type="button" class="subnav-link" onclick="location.href='works-log.html'">
+        制作ログ一覧
+      </button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="detailCard">
+    <h2 class="section-title">作品ログ</h2>
+    <div id="detailView" class="detail"></div>
+
+    <div class="button-row detail-actions">
+      <button onclick="startEdit()">編集</button>
+      <button type="button" class="secondary" onclick="deleteWork()">削除</button>
+    </div>
+
+    <button type="button" class="secondary detail-close" onclick="closeDetail()">閉じる</button>
+  </div>
+
+
+<div class="card backup-card">
+    <div class="backup-title">バックアップ</div>
+    <div class="backup-sub">ログを保存・読み込みできます</div>
+
+    <div class="backup-buttons">
+      <button onclick="exportAiroData('logs')">ログ</button>
+      <button onclick="exportAiroData('works')">制作</button>
+      <button onclick="exportAiroData()">全部</button>
+    </div>
+
+    <label class="backup-import">
+      <span>バックアップを読み込む</span>
+      <input type="file" accept=".json" onchange="importAiroData(event)">
+    </label>
+  </div>
+  <div id="toast" class="toast">読み込み完了</div>
+
+</div> <!-- container -->
+
+<div class="side-nav">
+  <a href="index.html">あいろ</a>
+  <a href="logs.html">ログ一覧</a>
+  <a href="insight.html">いんさいと</a>
+  <a href="torine.html">とりね洞</a>
+  <a href="works.html" class="active">制作</a>
+</div>
+
+
+<script>
+let selectedId = null;
+let editingId = null;
+let currentPhoto = "";
+let works = JSON.parse(localStorage.getItem("airoWorks")) || [];
+
+function saveToStorage() {
+  localStorage.setItem("airoWorks", JSON.stringify(works));
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function updatePhotoPreview(src) {
+  const img = document.getElementById("photoPreview");
+  if (!img) return;
+
+  if (src) {
+    img.src = src;
+    img.classList.remove("hidden");
+  } else {
+    img.src = "";
+    img.classList.add("hidden");
+  }
+}
+
+function clearForm() {
+  document.getElementById("date").value = "";
+  document.getElementById("title").value = "";
+  document.getElementById("theme").value = "";
+  document.getElementById("trigger").value = "";
+  document.getElementById("challenge").value = "";
+  document.getElementById("feeling").value = "";
+  document.getElementById("photo").value = "";
+
+  currentPhoto = "";
+  updatePhotoPreview("");
+
+  const fileName = document.getElementById("file-name");
+  if (fileName) fileName.textContent = "画像えらんでね";
+}
+
+function updateFormMode() {
+  const saveButton = document.getElementById("saveButton");
+  if (saveButton) saveButton.textContent = editingId ? "更新" : "保存";
+}
+
+function saveWork() {
+  const date = document.getElementById("date")?.value || "";
+  const title = document.getElementById("title")?.value || "";
+  const theme = document.getElementById("theme")?.value || "";
+  const trigger = document.getElementById("trigger")?.value || "";
+  const challenge = document.getElementById("challenge")?.value || "";
+  const feeling = document.getElementById("feeling")?.value || "";
+
+  if (editingId) {
+    const target = works.find(work => work.id === editingId);
+    if (target) {
+      target.date = date;
+      target.title = title;
+      target.photo = currentPhoto;
+      target.theme = theme;
+      target.trigger = trigger;
+      target.challenge = challenge;
+      target.feeling = feeling;
+      target.visibility = target.visibility || "private";
+    }
+    selectedId = editingId;
+  } else {
+    const work = {
+      id: Date.now(),
+      date,
+      title,
+      photo: currentPhoto,
+      theme,
+      trigger,
+      challenge,
+      feeling,
+      visibility: "private"
+    };
+    works.unshift(work);
+    selectedId = work.id;
+  }
+
+  saveToStorage();
+  clearForm();
+  editingId = null;
+  updateFormMode();
+  renderWorks();
+
+  if (selectedId) {
+    setTimeout(() => showDetail(selectedId), 100);
+  }
+}
+
+function getSortedWorks() {
+  const sortOrder = document.getElementById("sortOrder")?.value || "new";
+  const result = [...works];
+
+  result.sort((a, b) => {
+    return sortOrder === "new" ? b.id - a.id : a.id - b.id;
+  });
+
+  return result;
+}
+
+function renderWorks() {
+  const workList = document.getElementById("workList");
+  if (!workList) return;
+
+  const sortedWorks = getSortedWorks();
+  workList.innerHTML = "";
+
+  if (sortedWorks.length === 0) {
+    workList.innerHTML = "<p style='color:rgba(255,255,255,0.6); text-align:center;'>まだ作品ログがありません。</p>";
+    return;
+  }
+
+  sortedWorks.forEach(work => {
+    const div = document.createElement("div");
+    div.className = "work-item";
+    div.onclick = function () {
+      showDetail(work.id);
+    };
+
+    const titleMain = document.createElement("div");
+    titleMain.className = "work-title-main";
+
+    if (!work.title || work.title.trim() === "") {
+      titleMain.textContent = "無題";
+      titleMain.classList.add("empty");
+    } else {
+      titleMain.textContent = work.title;
+    }
+
+    const subtitle = document.createElement("div");
+    subtitle.className = "work-subtitle";
+    subtitle.innerHTML = [
+      escapeHtml(work.date || ""),
+      escapeHtml(work.theme || "")
+    ].filter(Boolean).join("<br>");
+
+    div.appendChild(titleMain);
+    div.appendChild(subtitle);
+    workList.appendChild(div);
+  });
+}
+
+function makeDetailBlock(label, value) {
+  return (
+    "<div class='detail-block'>" +
+      "<div class='detail-label'>" + escapeHtml(label) + "</div>" +
+      "<div>" + escapeHtml(value) + "</div>" +
+    "</div>"
+  );
+}
+
+function showDetail(id) {
+  const work = works.find(item => item.id === id);
+  if (!work) return;
+
+  selectedId = id;
+
+  const detailCard = document.getElementById("detailCard");
+  const detailView = document.getElementById("detailView");
+
+  detailView.innerHTML =
+    (work.photo
+      ? "<div class='detail-block'>" +
+          "<div class='detail-label'>画像</div>" +
+          "<img src='" + work.photo + "' class='photo-preview'>" +
+        "</div>"
+      : "") +
+    makeDetailBlock("日付", work.date || "") +
+    makeDetailBlock("作品名", work.title || "") +
+    makeDetailBlock("テーマ", work.theme || "") +
+    makeDetailBlock("きっかけ", work.trigger || "") +
+    makeDetailBlock("挑戦", work.challenge || "") +
+    makeDetailBlock("届けたい感じ", work.feeling || "");
+
+  detailCard.classList.remove("hidden");
+
+  window.scrollTo({
+    top: detailCard.offsetTop - 20,
+    behavior: "smooth"
+  });
+}
+
+function startEdit() {
+  const work = works.find(item => item.id === selectedId);
+  if (!work) return;
+
+  editingId = work.id;
+
+  document.getElementById("date").value = work.date || "";
+  document.getElementById("title").value = work.title || "";
+  document.getElementById("theme").value = work.theme || "";
+  document.getElementById("trigger").value = work.trigger || "";
+  document.getElementById("challenge").value = work.challenge || "";
+  document.getElementById("feeling").value = work.feeling || "";
+
+  currentPhoto = work.photo || "";
+  updatePhotoPreview(currentPhoto);
+
+  const fileName = document.getElementById("file-name");
+  if (fileName) fileName.textContent = currentPhoto ? "画像を保持中" : "画像えらんでね";
+
+  updateFormMode();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+function deleteWork() {
+  if (!selectedId) return;
+
+  const ok = confirm("この作品ログを削除する？");
+  if (!ok) return;
+
+  works = works.filter(work => work.id !== selectedId);
+  saveToStorage();
+
+  selectedId = null;
+  editingId = null;
+  clearForm();
+  updateFormMode();
+
+  const detailCard = document.getElementById("detailCard");
+  if (detailCard) detailCard.classList.add("hidden");
+
+  renderWorks();
+}
+
+function closeDetail() {
+  document.getElementById("detailCard").classList.add("hidden");
+}
+
+function bindPhotoInput() {
+  const photoInput = document.getElementById("photo");
+  if (!photoInput) return;
+
+  photoInput.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    const fileName = document.getElementById("file-name");
+
+    if (!file) {
+      currentPhoto = "";
+      updatePhotoPreview("");
+      if (fileName) fileName.textContent = "画像えらんでね";
+      return;
+    }
+
+    if (fileName) fileName.textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      currentPhoto = event.target.result;
+      updatePhotoPreview(currentPhoto);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function fadeMove(url) {
+  const fade = document.getElementById("pageFade");
+  if (fade) fade.classList.add("show");
+  setTimeout(() => { location.href = url; }, 120);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  bindPhotoInput();
+  updateFormMode();
+  renderWorks();
+
+  const container = document.querySelector(".container");
+  if (container) {
+    setTimeout(() => {
+      container.classList.add("show");
+    }, 50);
+  }
+});
+
+
+function exportAiroData() {
+  const data = {
+    version: "airo-backup-1",
+    exportedAt: new Date().toISOString(),
+    airoLogs: JSON.parse(localStorage.getItem("airoLogs") || "[]"),
+    airoWorks: JSON.parse(localStorage.getItem("airoWorks") || "[]")
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json"
+  });
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "airo-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportAiroData(type = "all") {
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0,10); // 2026-05-01
+
+  let data = {};
+  let filename = "";
+
+  if (type === "logs") {
+    data = {
+      airoLogs: JSON.parse(localStorage.getItem("airoLogs") || "[]")
+    };
+    filename = `airo-logs-${dateStr}.json`;
+
+  } else if (type === "works") {
+    data = {
+      airoWorks: JSON.parse(localStorage.getItem("airoWorks") || "[]")
+    };
+    filename = `airo-works-${dateStr}.json`;
+
+  } else {
+    data = {
+      airoLogs: JSON.parse(localStorage.getItem("airoLogs") || "[]"),
+      airoWorks: JSON.parse(localStorage.getItem("airoWorks") || "[]")
+    };
+    filename = `airo-all-${dateStr}.json`;
+  }
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json"
+  });
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
+}
+
+function importAiroData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (Array.isArray(data.airoLogs)) {
+        localStorage.setItem("airoLogs", JSON.stringify(data.airoLogs));
+      }
+
+      if (Array.isArray(data.airoWorks)) {
+        localStorage.setItem("airoWorks", JSON.stringify(data.airoWorks));
+      }
+
+      showToast("バックアップを読み込みました");
+      renderWorks(); // ← Works画面だからこれ必要
+
+    } catch (err) {
+      showToast("読み込みに失敗しました");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+
+</script>
+</body>
+</html>
