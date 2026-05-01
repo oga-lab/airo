@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>あいろ｜insight</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Zen Maru Gothic', sans-serif;
+  background:
+    linear-gradient(rgba(111,111,115,0.76), rgba(111,111,115,0.76)),
+    url("./bg.png") repeat;
+  background-size: 200px auto;
+  background-attachment: fixed;
+  color: #f8f8f8;
+  padding: 20px;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.container.show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+
+h1 {
+  text-align: left;
+}
+
+.card {
+  background: rgba(28,28,31,0.6);
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.section {
+  padding: 16px 12px;
+}
+
+.section-title {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.section:first-of-type {
+  padding: 24px 10px;
+}
+
+
+/* canvas */
+canvas {
+ width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 2px;
+}
+
+/* 最近カード */
+.insight-text {
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+
+.tag-art { background: rgba(255, 182, 193, 0.18); color: #ffd1dc; }
+.tag-calligraphy { background: rgba(200, 180, 255, 0.18); color: #d8ccff; }
+.tag-photo { background: rgba(180, 200, 255, 0.18); color: #cfdcff; }
+.tag-stage { background: rgba(255, 200, 150, 0.18); color: #ffd8b0; }
+.tag-music { background: rgba(150, 220, 255, 0.18); color: #bfe9ff; }
+.tag-movie { background: rgba(255, 160, 160, 0.18); color: #ffc4c4; }
+.tag-book { background: rgba(140, 120, 100, 0.22); color: #d6c6b0; }
+.tag-architecture { background: rgba(200, 255, 200, 0.18); color: #d6ffd6; }
+.tag-craft { background: rgba(255, 230, 160, 0.18); color: #fff0b3; }
+.tag-person { background: rgba(255, 170, 200, 0.22); color: #ffc1da; }
+.tag-daily { background: rgba(210, 200, 170, 0.22); color: #e8dec2; }
+.tag-other { background: rgba(220, 220, 220, 0.18); color: #e0e0e0; }
+
+
+.title-img {
+  width: 160px;
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin-bottom: 18px;
+  margin-left: -3px;
+  opacity: 0.95;
+}
+
+.page-logo {
+  text-align: center;
+  margin: 4px 0 14px;
+  padding: 0;
+}
+
+.page-logo img {
+  width: 200px;
+  max-width: 80%;
+  margin-top: -4px;
+  height: auto;
+  opacity: 0.95;
+  filter:
+  drop-shadow(0 2px 6px rgba(0,0,0,0.35))
+  drop-shadow(0 0 6px rgba(255,240,170,0.12));
+}
+
+
+.line-legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.68);
+  letter-spacing: 0.04em;
+}
+
+.line-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 24px;
+  height: 0;
+  border-top: 3px solid;
+  border-radius: 999px;
+}
+
+.legend-line.length {
+  border-color: rgba(219,192,106,0.9);
+}
+
+.legend-line.punctuation {
+  border-color: rgba(160,220,255,0.85);
+  border-top-style: dashed;
+}
+
+.insight-footer {
+  text-align: center;
+  color: rgba(255, 240, 180, 0.8);
+  font-size: 13px;
+  margin-top: 6px;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+  margin-bottom: 20px;  
+}
+
+
+.torine-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.help-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  font-size: 10px;
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.75);
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+
+.torine-help {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.75);
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.hidden {
+  display: none;
+}
+
+.help-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.help-desc {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.torine-title .title-img {
+  margin-bottom: 0;
+}
+
+.side-nav {
+  position: fixed;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+
+.side-nav a {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+
+  font-size: 11px;
+  letter-spacing: 0.08em;
+
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+
+  padding: 6px 4px;
+  border-radius: 10px;
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(4px);
+
+  transition: all 0.2s ease;
+}
+
+.side-nav a:active {
+  opacity: 0.6;
+  transform: scale(0.95);
+}
+.side-nav a.active {
+  color: #dbc06a;
+  background: rgba(219,192,106,0.12);
+  opacity: 1;
+}
+
+.scroll-top-btn {
+  position: fixed;
+  right: 18px;
+  bottom: 24px;
+
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 245, 200, 0.14);
+  color: rgba(255, 245, 200, 0.9);
+
+  border: 1px solid rgba(255, 245, 200, 0.22);
+  backdrop-filter: blur(6px);
+
+  font-size: 18px;
+  font-weight: 700;
+
+  opacity: 0.7;
+  z-index: 999;
+
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+
+.scroll-top-btn:active {
+  transform: scale(0.92);
+  opacity: 0.75;
+}
+
+.work-seed {
+  margin-top: 22px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+
+  color: rgba(255, 220, 120, 0.9);
+  font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+}
+
+.work-seed-sub {
+  display: block;
+  margin-top: 10px; /* ← 6 → 10に */
+  color: rgba(255,255,255,0.45); /* ← 少しだけ薄く */
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+
+.insight-poem {
+  margin-top: 22px;
+  color: rgba(255, 245, 210, 0.68);
+  font-size: 12px;
+  line-height: 1.8;
+  letter-spacing: 0.05em;
+}
+
+.torine-word {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+.torine-word:hover {
+  opacity: 1;
+}
+
+.insight-text {
+  font-size: 16px;
+  line-height: 2;
+}
+
+.top-words-list {
+  margin-top: 0;
+}
+
+.word-header,
+.word-row {
+  display: grid;
+  grid-template-columns: 70% 30%;
+  align-items: center;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+}
+
+.word-row span:first-child {
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.word-header {
+  margin-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.14);
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+}
+
+.word-row {
+  padding: 8px 0;
+}
+
+.word-header span,
+.word-row span {
+  padding: 4px 10px;
+}
+
+.word-header span:last-child,
+.word-row span:last-child {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.word-header::after,
+.word-row::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 68%;
+  width: 1px;
+  background: rgba(255,255,255,0.14);
+}
+
+.torine-word {
+  display: inline-block;
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+}
+
+.word-count {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.tag-comment {
+  margin-top: 10px;
+  text-align: center;
+  color: rgba(255,245,210,0.72);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.tag-question {
+  margin-top: 4px;
+  color: rgba(255,245,210,0.78);
+  font-size: 13px;
+}
+
+.tag-action {
+  margin-top: 8px;
+  color: rgba(255,255,255,0.46);
+  font-size: 12px;
+}
+
+.graph-caption {
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 class="page-logo">
+  <img src="images/insight-logo.png" alt="insight">
+</h1>
+
+<!-- ① タグ偏り -->
+<div class="card section">
+  <div class="section-title">
+    <img src="images/insight-gaze.png" class="title-img">
+  </div>
+
+  <canvas id="tagChart"></canvas>
+
+  <div class="insight-footer">
+    ふれ続けたもののかたち
+  </div>
+  
+  <div id="tagComment" class="tag-comment"></div>
+</div>
+
+<!-- ② とりね変化 -->
+<div class="card">
+  <div class="section-title torine-title">
+    <img src="images/insight-torine.png" class="title-img">
+
+    <button class="help-btn" onclick="toggleHelp()">？</button>
+  </div>
+
+  <div id="torineHelp" class="torine-help hidden">
+<span class="help-label">とりねの長さ：</span><br>
+<span class="help-desc">言葉の密度。短いほど削れている状態。</span><br>
+<span class="help-label">句読点の割合：</span><br>
+<span class="help-desc">リズムの切れ方。多いほど分節的、少ないほど流動的。</span>
+    </div>
+
+  <canvas id="lineChart"></canvas>
+
+  <div class="line-legend">
+    <span><i class="legend-line length"></i>とりねの長さ</span>
+    <span><i class="legend-line punctuation"></i>句読点の割合</span>
+  </div>
+  <div class="graph-caption">
+  ※最近の記録順に並んでいます
+</div>
+</div>
+
+<!-- ③ 最近の自分 -->
+<div class="card">
+  <div class="section-title">
+  <img src="images/insight-self.png" class="title-img">
+</div>
+  <div id="insightText" class="insight-text"></div>
+</div>
+
+</div>
+
+<script>
+const logs = (JSON.parse(localStorage.getItem("airoLogs")) || []).map(log => ({
+  ...log,
+  tags: log.tags || (log.tag ? [log.tag] : [])
+}));
+
+/* =========================
+   ① タグ偏り（円グラフ）
+========================= */
+function drawPie() {
+  const canvas = document.getElementById("tagChart");
+  const ctx = canvas.getContext("2d");
+
+  const ratio = window.devicePixelRatio || 1;
+const baseW = 360;
+const baseH = 360;
+
+canvas.width = baseW * ratio;
+canvas.height = baseH * ratio;
+
+canvas.style.width = "100%";
+canvas.style.height = "auto";
+
+ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+ctx.clearRect(0, 0, baseW, baseH);
+  
+
+  const tagCount = {};
+
+  logs.forEach(log => {
+    (log.tags || []).forEach(tag => {
+      tagCount[tag] = (tagCount[tag] || 0) + 1;
+    });
+  });
+
+  const tags = Object.keys(tagCount);
+  const values = Object.values(tagCount);
+  const total = values.reduce((a, b) => a + b, 0);
+  const maxTagValue = Math.max(...values);
+
+  if (total === 0) {
+    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.font = "15px 'Zen Maru Gothic'";
+    ctx.textAlign = "center";
+    ctx.fillText("まだ、まなざしは眠ってる", 160, 120);
+    return;
+  }
+
+
+  const cx = baseW / 2;
+const cy = baseH / 2 - 20;
+  const r = 140;
+  
+  let start = -Math.PI / 2;
+
+
+  tags.forEach((tag, i) => {
+    const val = tagCount[tag];
+    const isMain = val === maxTagValue;
+    const angle = (val / total) * Math.PI * 2;
+    const end = start + angle;
+
+    ctx.beginPath();
+ctx.moveTo(cx, cy);
+ctx.arc(cx, cy, r, start, end);
+ctx.closePath();
+
+    const className = getTagClass(tag);
+
+const el = document.createElement("span");
+el.className = "tag " + className;
+el.style.display = "none";
+document.body.appendChild(el);
+
+const bg = getComputedStyle(el).backgroundColor;
+
+document.body.removeChild(el);
+
+ctx.fillStyle = isMain
+  ? bg.replace(/[\d.]+\)$/,"0.28)")
+  : bg.replace(/[\d.]+\)$/,"0.18)");
+    ctx.fill();
+
+    ctx.strokeStyle = "rgba(255,255,255,0.18)";
+ctx.lineWidth = isMain ? 1.5 : 1;
+    ctx.stroke();
+
+    // タグ名
+    const mid = start + angle / 2;
+    const isSmall = val / total < 0.08;
+
+ctx.fillStyle = "rgba(255,255,255,0.85)";
+ctx.font = "500 12px 'Zen Maru Gothic'";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+
+const labelRadius = isSmall ? r * 0.88 : r * 0.68;
+const labelX = cx + Math.cos(mid) * labelRadius;
+const labelY = cy + Math.sin(mid) * labelRadius;
+
+ctx.font = isSmall
+  ? "500 10px 'Zen Maru Gothic'"
+  : "500 12px 'Zen Maru Gothic'";
+
+ctx.fillText(tag, labelX, labelY);
+
+    start = end;
+  });
+
+
+const mainTag = tags[values.indexOf(maxTagValue)];
+showTagComment(mainTag);
+}
+
+
+function getTagClass(tag) {
+  switch(tag) {
+    case "美術": return "tag-art";
+    case "書道": return "tag-calligraphy";
+    case "写真": return "tag-photo";
+    case "舞台": return "tag-stage";
+    case "音楽": return "tag-music";
+    case "映画": return "tag-movie";
+    case "本": return "tag-book";
+    case "建築": return "tag-architecture";
+    case "工芸": return "tag-craft";
+    case "人": return "tag-person";
+    case "日常": return "tag-daily";
+    default: return "tag-other";
+  }
+}
+/* =========================
+   ② とりね文字数ライン
+========================= */
+function drawLine() {
+  const canvas = document.getElementById("lineChart");
+  const ctx = canvas.getContext("2d");
+
+  const ratio = window.devicePixelRatio || 1;
+const baseW = 360;
+const baseH = 220;
+
+canvas.width = baseW * ratio;
+canvas.height = baseH * ratio;
+
+canvas.style.width = "100%";
+canvas.style.height = "auto";
+
+ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+ctx.clearRect(0, 0, baseW, baseH);
+
+  const data = logs
+    .filter(log => log.torine && log.torine.trim() !== "")
+    .sort((a, b) => a.id - b.id); // 古い→新しい
+
+  if (data.length === 0) {
+    ctx.fillStyle = "rgba(255,255,255,0.45)";
+    ctx.font = "15px 'Zen Maru Gothic'";
+    ctx.textAlign = "center";
+    ctx.fillText("まだ、流れは眠ってる", 180, 110);
+    return;
+  }
+
+  // ===== データ作成 =====
+  const lengths = data.map(log => log.torine.trim().length);
+
+  const punctuationRates = data.map(log => {
+    const text = log.torine.trim();
+    const punctuation = (text.match(/[、。]/g) || []).length;
+    return text.length === 0 ? 0 : punctuation / text.length;
+  });
+
+  // ===== スケール =====
+  const padding = 28;
+  const w = baseW - padding * 2;
+const h = baseH - padding * 2;
+
+  const maxLen = Math.max(...lengths, 1);
+  const minLen = Math.min(...lengths);
+
+  const maxRate = Math.max(...punctuationRates, 0.1);
+  const minRate = Math.min(...punctuationRates);
+
+  // ===== ① 文字数ライン（ゴールド） =====
+ctx.beginPath();
+
+lengths.forEach((val, i) => {
+  const x = padding + (i / (lengths.length - 1)) * w;
+  const y = padding + (1 - (val - minLen) / (maxLen - minLen || 1)) * h;
+
+  if (i === 0) ctx.moveTo(x, y);
+  else ctx.lineTo(x, y);
+});
+
+ctx.strokeStyle = "rgba(219,192,106,0.6)";
+ctx.lineWidth = 3;
+ctx.lineCap = "round";
+ctx.stroke();
+
+// 点と「今」は、線を描いたあとに描く
+lengths.forEach((val, i) => {
+  const x = padding + (i / (lengths.length - 1)) * w;
+  const y = padding + (1 - (val - minLen) / (maxLen - minLen || 1)) * h;
+
+  const ratio = i / (lengths.length - 1);
+  const alpha = 0.25 + ratio * 0.75;
+
+  ctx.beginPath();
+  ctx.arc(x, y, 2, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+  ctx.fill();
+
+if (i === lengths.length - 1) {
+  // 🔥 光らせる
+  ctx.shadowColor = "#FFD966";
+  ctx.shadowBlur = 10;
+
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fillStyle = "#FFD966";
+  ctx.fill();
+
+  ctx.shadowBlur = 0; // 戻す
+
+  // ラベル
+  ctx.font = "11px 'Zen Maru Gothic'";
+  ctx.fillStyle = "rgba(255,255,255,0.85)";
+  ctx.textAlign = "center";
+  ctx.fillText("今", x, y - 10);
+}
+});
+  // ===== ② 句読点率ライン（薄い青） =====
+  ctx.beginPath();
+
+  punctuationRates.forEach((val, i) => {
+    const x = padding + (i / (punctuationRates.length - 1)) * w;
+    const y = padding + (1 - (val - minRate) / (maxRate - minRate || 1)) * h;
+
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+
+  ctx.strokeStyle = "rgba(160,220,255,0.85)";
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.setLineDash([4, 4]); // 点線にする
+  ctx.stroke();
+
+  ctx.setLineDash([]); // リセット
+
+punctuationRates.forEach((val, i) => {
+  const x = padding + (i / (punctuationRates.length - 1)) * w;
+  const y = padding + (1 - (val - minRate) / (maxRate - minRate || 1)) * h;
+
+  const ratio = i / (punctuationRates.length - 1);
+  const alpha = 0.2 + ratio * 0.6;
+
+  // 点（全体）
+  ctx.beginPath();
+  ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+  ctx.fillStyle = `rgba(160,220,255,${alpha})`;
+  ctx.fill();
+
+  // 右端だけ強調
+  if (i === punctuationRates.length - 1) {
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(160,220,255,0.9)";
+    ctx.fill();
+  }
+});
+}
+
+function toggleHelp() {
+  const el = document.getElementById("torineHelp");
+  el.classList.toggle("hidden");
+}
+
+/* =========================
+   ③ 最近の自分
+========================= */
+function generateInsight() {
+  const el = document.getElementById("insightText");
+
+const words = {};
+const wordLogMap = {}; // ← 追加
+const tags = {};
+
+  logs.forEach(log => {
+    const sources = [
+      ...(log.torine ? [log.torine] : []),
+      ...(log.impressions || [])
+    ];
+
+    sources.forEach(text => {
+      text.split(/[、。・\s]/).forEach(word => {
+        if (
+          word.length >= 2 &&
+          word.length <= 6 &&
+          !/^[0-9]+$/.test(word)
+        ){
+         words[word] = (words[word] || 0) + 1;
+
+if (!wordLogMap[word]) {
+  wordLogMap[word] = log.id;
+}
+        }
+      });
+    });
+
+    (log.tags || []).forEach(t => {
+      tags[t] = (tags[t] || 0) + 1;
+    });
+  });
+
+  const topWords = Object.keys(words)
+  .sort((a,b) => words[b] - words[a])
+  .slice(0,3)
+  .map(word => {
+    return `
+      <div class="word-row">
+        <span class="torine-word" data-id="${wordLogMap[word]}">${word}</span>
+        <span class="word-count">${words[word]}</span>
+      </div>
+    `;
+  })
+  .join("");
+
+  const topTag = Object.keys(tags)
+    .sort((a,b) => tags[b] - tags[a])[0];
+    
+    
+    const softPoems = [
+  "まだ言葉にならないものが、ここにある",
+  "ふと、わかりかけている気がする",
+  "途中のまま、ちゃんと残っている",
+  "輪郭が、うっすら見えはじめている",
+  "見ているものと、残るものが少し違う",
+  "惹かれるものが、変わりはじめている",
+  "まだ、続いている",
+  "ここから、どうなるだろう"
+];
+
+const poem = softPoems[Math.floor(Math.random() * softPoems.length)];
+    
+
+  el.innerHTML = `
+◯　よく観ているもの：${topTag || "まだない"}<br>
+◯　残りやすい言葉：<br>
+<div class="word-header">
+  <span>言葉</span>
+  <span>回数</span>
+</div>
+<div class="top-words-list">
+  ${topWords || "まだない"}
+</div>
+◯　とりねの傾向：${logs.length > 5 ? "少し削れてきている" : "まだ集めている"}
+
+
+  <div class="work-seed">
+  このまなざしは、どんな「わたし」になっていく？<br>
+  <span class="work-seed-sub">
+  この変化は、どこから続いている？
+</span>
+
+<div class="insight-poem">
+  ${poem}
+</div>
+</div>
+`;
+}
+
+
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  const el = document.querySelector(".container");
+  if (el) {
+    setTimeout(() => {
+      el.classList.add("show");
+    }, 50);
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("torine-word")) {
+    const id = e.target.dataset.id;
+    location.href = `logs.html?id=${id}`;
+  }
+});
+
+const tagComments = {
+  "美術": {
+    question: "どこに、いちばん目が残った？",
+    action: "次は、そこをもう一度見に行く？"
+  },
+  "書道": {
+    question: "どの古典が好き？",
+    action: "その筆の流れ、なぞってみる？"
+  },
+  "写真": {
+    question: "どの光が残ってる？",
+    action: "同じ光、探しに行く？"
+  },
+  "舞台": {
+    question: "どの瞬間で空気が変わった？",
+    action: "もう一度、その瞬間に戻れる？"
+  },
+  "音楽": {
+    question: "どの音が、まだ残ってる？",
+    action: "その音、もう一回聴く？"
+  },
+  "映画": {
+    question: "どの場面に戻りたい？",
+    action: "もう一度、その場面を見てみる？"
+  },
+  "本": {
+    question: "どの一文が残ってる？",
+    action: "その一文、もう一度読みに行く？"
+  },
+  "建築": {
+    question: "どの空間に身体が反応した？",
+    action: "次は、身体の反応を見てみる？"
+  },
+  "工芸": {
+    question: "どの手ざわりが残ってる？",
+    action: "もう一度、手ざわりを想像してみる？"
+  },
+  "人": {
+    question: "その人の、どんな気配が残った？",
+    action: "次は、その気配をもう少し見てみる？"
+  },
+  "日常": {
+    question: "今日のどこが、少し光ってた？",
+    action: "明日も、その光を探してみる？"
+  },
+  "その他": {
+    question: "何が、まだ名前になってない？",
+    action: "次は、その名前のないものを見に行く？"
+  }
+};
+
+function showTagComment(mainTag) {
+  const commentEl = document.getElementById("tagComment");
+  const comment = tagComments[mainTag];
+
+  if (commentEl && comment) {
+    commentEl.innerHTML = `
+      <div class="tag-question">${comment.question}</div>
+      <div class="tag-action">${comment.action}</div>
+    `;
+  }
+}
+
+drawPie();
+drawLine();
+generateInsight();
+
+</script>
+<div class="side-nav">
+  <a href="index.html">あいろ</a>
+  <a href="logs.html">ログ一覧</a>
+  <a href="insight.html" class="active">いんさいと</a>
+  <a href="torine.html">とりね洞</a>
+  <a href="works.html">制作</a>
+</div>
+  <button class="scroll-top-btn" onclick="scrollToTop()">︿</button>
+</div>
+</body>
+</html>
