@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>about あいろ</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== 背景 ===== */
+  body {
+    background-color: #ffffff;
+    background-image: url("bg.png");
+    background-repeat: repeat;
+    background-size: 300px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Zen Maru Gothic', "Hiragino Maru Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+    color: #3a3a3a;
+    line-height: 1.9;
+    min-height: 100vh;
+  }
+
+  /* 上にうっすらレイヤーかける */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* ===== コンテンツ ===== */
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 3rem 1.5rem 2.5rem;
+    color: #c9a961;
+    letter-spacing: 0.14em;
+  }
+
+  p {
+    max-width: 520px;
+    margin: 1.8rem auto;
+    padding: 0 1.8rem;
+    font-size: 0.98rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* 真ん中の流れの段落だけ少し特別に */
+  p:nth-of-type(2) {
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 14px;
+    padding: 1.6rem 1.8rem;
+    margin: 2.2rem auto;
+    color: #5a5a5a;
+  }
+
+  /* 最後の一言 */
+  p:last-of-type {
+    text-align: center;
+    color: #7a7a7a;
+    font-size: 0.92rem;
+    margin-top: 2.5rem;
+  }
+
+  /* ===== 戻るリンク ===== */
+  a {
+    display: block;
+    width: fit-content;
+    margin: 3rem auto 4rem;
+    padding: 0.7rem 1.8rem;
+    background-color: rgba(201, 169, 97, 0.85);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    transition: background-color 0.2s ease;
+  }
+
+  a:hover {
+    background-color: rgba(201, 169, 97, 1);
+  }
+
+  /* ===== 中身だけフェード ===== */
+  .fade-content {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-content.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="fade-content">
+
+  <h1>about あいろ</h1>
+
+  <p>
+  あいろは、観たもの・触れたもののあとに、<br>
+  まだ残っている感じを記録する場所です。
+  </p>
+
+  <p>
+  空気を思い出す<br>
+  印象に残ったところを書く<br>
+  どうしてそう感じたかを見る<br>
+  最後に、一言で残す
+  </p>
+
+  <p>
+  うまく書かなくて大丈夫。<br>
+  なんとなく残っているものからで大丈夫。
+  </p>
+
+  <a href="index.html">記録にもどる</a>
+
+</div>
+
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      document.querySelector(".fade-content").classList.add("show");
+    }, 50);
+  });
+</script>
+</body>
+</html>
