@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>あいろ｜ログ一覧</title>
   <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="image-store.js"></script>
   <style>
     body {
       margin: 0;
@@ -759,6 +760,12 @@ subtitle.innerHTML =
 
 　const tagHtml = renderTagSpans(log.tags || (log.tag ? [log.tag] : []));
 
+      // 画像プレースホルダ。後で非同期に流し込む
+      const imgPlaceholderId = "detailImg_" + id;
+      const imgHtml = (log.photoId || log.photo)
+        ? "<div class='detail-block'><div class='detail-label'>画像</div><img id='" + imgPlaceholderId + "' class='photo-preview' alt='保存画像'></div>"
+        : "";
+
       detailView.innerHTML =
         (tagHtml ? "<div class='tag-wrap'>" + tagHtml + "</div>" : "") +
         ((log.torine && log.torine.trim() !== "")
@@ -774,7 +781,7 @@ subtitle.innerHTML =
         makeDetailBlock("日付", log.date || "") +
         makeDetailBlock("展覧会名", log.exhibition || "") +
         makeDetailBlock("場所", log.place || log.artist || "") +
-(log.photo ? "<div class='detail-block'><div class='detail-label'>画像</div><img src='" + log.photo + "' class='photo-preview' alt='保存画像'></div>" : "") +
+imgHtml +
 makeDetailBlock("雰囲気", log.atmosphere || log.air || "") +
 makeDetailBlock("感じたこと", log.felt || "") +
 makeDetailBlock(
@@ -783,6 +790,19 @@ makeDetailBlock(
 ) +
 makeDetailBlock("しくみ", log.analysis || "");
       detailCard.classList.remove("hidden");
+
+      // 画像を非同期に流し込む
+      if (log.photoId) {
+        window.imageStore.getImageUrl(log.photoId).then(url => {
+          const el = document.getElementById(imgPlaceholderId);
+          if (el && url) el.src = url;
+        });
+      } else if (log.photo) {
+        // 旧形式フォールバック
+        const el = document.getElementById(imgPlaceholderId);
+        if (el) el.src = log.photo;
+      }
+
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
 
@@ -790,11 +810,21 @@ makeDetailBlock("しくみ", log.analysis || "");
       document.getElementById("detailCard").classList.add("hidden");
     }
     
-    function deleteLog() {
+    async function deleteLog() {
   if (!selectedId) return;
 
   const ok = confirm("この記録を削除する？");
   if (!ok) return;
+
+  // 画像も削除
+  const target = logs.find(log => log.id === selectedId);
+  if (target && target.photoId) {
+    try {
+      await window.imageStore.deleteImage(target.photoId);
+    } catch (e) {
+      console.error("image delete failed", e);
+    }
+  }
 
   logs = logs.filter(log => log.id !== selectedId);
   localStorage.setItem("airoLogs", JSON.stringify(logs));
